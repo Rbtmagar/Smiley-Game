@@ -1,3 +1,4 @@
+# Import the required libraries
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk
@@ -5,12 +6,13 @@ from tkinter import messagebox
 from subprocess import call
 import pymysql
 
-
+# main loop 
 class Login:
     def __init__(self, root):
         self.root = root
-        self.root.title("smiley_game")
-        self.root.attributes('-fullscreen', True)
+        self.root.title("login")
+        self.root.geometry("1265x720+0+0")
+        self.root.resizable(False, False)
 
         # background image
         self.bg = ImageTk.PhotoImage(file="Image/R.jpg")
@@ -21,6 +23,7 @@ class Login:
         Frame_login = Frame(self.root, bg="white")
         Frame_login.place(x=700, y=120, height=450, width=500)
 
+        # label & entry
         title = Label(Frame_login, text="Login Here",
                       font=("Impact", 36, "bold"), fg="#d77337", bg="white")
         title.place(x=150, y=20)
@@ -43,21 +46,28 @@ class Login:
             "times new Roman", 15), bg="lightgray", show="*")
         self.password.place(x=80, y=280, width=350, height=35)
 
+        # button
         check = Checkbutton(
-            Frame_login, text="Remember password", bg="white", fg="black", bd=0, font=("times new Roman", 10))
+            Frame_login, text="Remember password", bg="white", fg="black", cursor="hand2", bd=0, font=("times new Roman", 10))
         check.place(x=80, y=320)
 
-        forget = Button(Frame_login, text="Forget Passoword?", bg="white",
-                        fg="black", bd=0, font=("times new Roman", 10))
+        forget = Button(Frame_login, command=self.forget_password, text="Forget Passoword?", bg="white",
+                        fg="black", activebackground="white", cursor="hand2", bd=0, font=("times new Roman", 10))
         forget.place(x=320, y=320)
 
-        login = Button(Frame_login, command=self.login_function, text="Log In", bg="#d25d17",
+        login = Button(Frame_login, command=self.login_function, text="Log In", cursor="hand2", bg="#d25d17",
                        fg="white", font=("times new Roman", 14))
         login.place(x=80, y=375, width=120)
 
-        signup = Button(Frame_login, command=self.signup_function, text="Create New Account", bg="green",
+        signup = Button(Frame_login, command=self.signup_function, text="Create New Account", cursor="hand2", bg="green",
                         fg="white", font=("times new Roman", 14))
         signup.place(x=225, y=375, width=200)
+
+    # functionality
+    
+    def forget_password(self):
+        self.root.destroy()
+        call(["python", "forgetpassword.py"])    
 
     def login_function(self):
         if self.username.get() == "" or self.password.get() == "":
@@ -92,5 +102,7 @@ class Login:
 
 
 root = Tk()
+img = PhotoImage(file="Image\icon.png")
+root.iconphoto(False, img)
 obj = Login(root)
 root.mainloop()
