@@ -105,7 +105,6 @@ class Forget_Password:
             else:
                 con.commit()
                 con.close()
-
                 # connect to gmail server
                 server = smtplib.SMTP('smtp.gmail.com', 587)  # 587: gmail port
                 # transfer layer security
@@ -179,7 +178,6 @@ class Forget_Password:
             messagebox.showerror(
                 "Error", "Please enter valid otp", parent=self.root)
             self.otp.delete(0, END)
-        # elif self.otp.get() != self.otp.get():
         elif self.otp.get() != self.otp_verification:
             messagebox.showerror(
                 "Error", "Please enter valid otp", parent=self.root)

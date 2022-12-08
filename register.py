@@ -134,21 +134,22 @@ class Registration:
                     con = pymysql.connect(
                         host="localhost", user="root", password="", database="player")
                     cur = con.cursor()
-
                     cur.execute("select * from player where username =%s",
                                 self.username.get())
                     row = cur.fetchone()
                     if row != None:
                         messagebox.showerror(
                             "Error", "User already exist, Please try with another Username", parent=self.root)
-
+                        con.commit()
+                        con.close()
                     cur.execute("select * from player where email =%s",
                                 self.email.get())
                     row = cur.fetchone()
                     if row != None:
                         messagebox.showerror(
-                            "Error", "Eamil already in use, Please try with another Email", parent=self.root)
-
+                            "Error", "Email already in use, Please try with another Email", parent=self.root)
+                        con.commit()
+                        con.close()
                     else:
                         # hashing password with algorithm sha1
                         passwd = hashlib.sha1(bytes(self.password.get(), encoding='utf-8'))
@@ -161,7 +162,7 @@ class Registration:
                         con.commit()
                         con.close()
                         messagebox.showinfo(
-                            "Success", f"Congratulaion : {self.username.get()}\nRegisteration is successful", parent=self.root)
+                            "Success", f"Congratulation : {self.username.get()}\nRegisteration is successful", parent=self.root)
                         self.clear()
                         time.sleep(0)
                         self.root.destroy()
