@@ -4,6 +4,7 @@
 # If the user answers incorrectly, the score remains the same. 
 # The user can log out at any time. 
 # The user's score is displayed at the bottom of the GUI.
+
 # Import the required libraries
 from tkinter import *
 import tkinter as tk

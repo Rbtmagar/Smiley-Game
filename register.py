@@ -1,4 +1,5 @@
 # It's a class that creates a GUI window with a registration form
+
 # Import the required libraries
 from tkinter import *
 from tkinter import messagebox
@@ -18,7 +19,7 @@ class Registration:
         self.root.geometry("1265x720+0+0")
         self.root.resizable(False, False)
 
-        # varibales
+        # variables
         self.username = StringVar()
         self.password_var = StringVar()
         self.confirm_password_var = StringVar()

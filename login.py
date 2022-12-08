@@ -52,7 +52,7 @@ class Login():
             "times new Roman", 15), bg="lightgray", show="*")
         self.password.place(x=80, y=280, width=350, height=35)
 
-        # button
+        # buttons
         self.show_pass= IntVar()
         check = Checkbutton(
             Frame_login, text="Show password",variable=self.show_pass, command=self.toggle, bg="white", fg="black", cursor="hand2", bd=0, font=("times new Roman", 10))
@@ -73,6 +73,7 @@ class Login():
        
 
     # functionality
+    # this function is to show and hide password 
     def toggle(self):
         if self.show_pass.get() == 1:
             self.password.config(show= '')
@@ -101,7 +102,6 @@ class Login():
                 password = passwd.hexdigest()
                 cur.execute("select password from player where username =%s",
                             (self.username.get(),))
-
                 row=cur.fetchone()
                 if row[0] != password:
                     messagebox.showerror(
@@ -110,7 +110,7 @@ class Login():
                     username=self.username.get()
                     self.root.destroy()
                     call(["python", "game.py",f"{username}"])
-
+                con.commit()
                 con.close()
 
             except Exception as es:

@@ -10,6 +10,7 @@
 # is equal to the text in the entry widgets, if it is, checks if the text in the entry widgets is
 # equal to the text in the entry widgets, if it is, checks if the text in the entry widgets is equal
 # to the text in the entry widgets
+
 # Import the required libraries
 from tkinter import *
 from tkinter import messagebox
@@ -129,7 +130,7 @@ class Forget_Password:
                 Frame_otp = Frame(self.root, bg="white")
                 Frame_otp.place(x=400, y=430, height=200, width=500)
 
-                title = Label(Frame_otp, text="Enter the code sent to your email:",
+                title = Label(Frame_otp, text="Enter the code sent to above email:",
                               font=("times new Roman", 12), fg="black")
                 title.place(x=100, y=40)
 
