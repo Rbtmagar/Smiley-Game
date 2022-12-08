@@ -20,6 +20,7 @@ from PIL import ImageTk, Image
 import time
 import sys
 
+
 root = tk.Tk()
 root.title("smiley_game")
 root.geometry("1265x720+0+0")
@@ -44,11 +45,11 @@ class Smiley_Game:
         # label
         title = Label(root, text=f"Welcome {self.username}",
                       font=("Impact", 36, "bold"), fg="#d77337")
-        title.place(x=420, y=10)
+        title.place(x=425, y=10)
         
-        title = Label(root, text="You got 20 seconds to answer:",
+        title = Label(root, text="You get 30 seconds to answer for every questions:",
                       font=("Impact", 16, "bold"), fg="#d77337")
-        title.place(x=420, y=80)
+        title.place(x=380, y=80)
 
         # Entry Input
         self.answer = Entry(root,  font=(
@@ -59,8 +60,10 @@ class Smiley_Game:
                         font=("times new Roman", 14), bg="#d25d17", fg="white")
         result.place(x=660, y=525, width=120)
         
+        num = IntVar()
+        num = None
         self.score_res = tk.Label(root,font=(
-            "times new Roman", 22))
+            "times new Roman", 22), textvariable=num)
         self.score_res.place(x=500, y=600)
         self.score_res.config(text=f'Your score is {str(self.score)}')
         self.show_image()
@@ -75,7 +78,7 @@ class Smiley_Game:
         image = Image.open(io.BytesIO(raw_data))
         self.image = ImageTk.PhotoImage(image)
         self.imagelab.config(image=self.image)
-        root.after(1000*10, self.show_image)
+        root.after(1000*30, self.show_image)
  
     #b this function is to logout and move to login page
     def logout_function(self):
@@ -112,7 +115,6 @@ class Smiley_Game:
 
 if __name__ == '__main__':
     ques, soln= Smiley_Game.create_image()
-    print(ques, soln)
     img = Smiley_Game(ques, soln)
     
     icon_img = PhotoImage(file="Image\icon.png")

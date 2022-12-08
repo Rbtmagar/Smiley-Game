@@ -1,20 +1,17 @@
+# It's a class that creates a login window with a background image, a frame, a title, two labels, two
+# entries, two buttons, and a checkbutton
+
 # Import the required libraries
 from tkinter import *
-from tkinter import ttk
 from PIL import ImageTk
 from tkinter import messagebox
 from subprocess import call
-import subprocess
 import time
-# import sys
 import hashlib
-# import os
-# import re
-from cryptography.fernet import Fernet
 import pymysql
 
-# main loop
 
+# main loop
 class Login():
     def __init__(self, root):
         self.root = root
@@ -37,8 +34,8 @@ class Login():
         title.place(x=150, y=20)
 
         title = Label(Frame_login, text="Log in to play Smiley Game",
-                      font=("Goudy old style", 12, "bold"), fg="#d25d17", bg="white")
-        title.place(x=150, y=80)
+                      font=("Goudy old style", 14, "bold"), fg="#d25d17", bg="white")
+        title.place(x=155, y=85)
 
         title = Label(Frame_login, text="Username:",
                       font=("Goudy old Style", 14,))
@@ -81,23 +78,25 @@ class Login():
             self.password.config(show= '')
         else:
             self.password.config(show= '*')
-
+            
+    # this function is for reseting password
     def forget_password(self):
         self.root.destroy()
         call(["python", "forgetpassword.py"])
         
 
-
+    # this function will run to game page
     def login_function(self):
         if self.username.get() == "" or self.password.get() == "":
             messagebox.showerror(
                 "Error", "Username and password are required", parent=self.root)
         else:
             try:
+                # connect to database
                 con = pymysql.connect(
                     host="localhost", user="root", password="", database="player")
                 cur = con.cursor()
-                
+                # hashing password with algorithm sha1
                 passwd = hashlib.sha1(bytes(self.password.get(), encoding='utf-8'))
                 password = passwd.hexdigest()
                 cur.execute("select password from player where username =%s",
@@ -118,6 +117,7 @@ class Login():
                 messagebox.showerror(
                     "Error", f"Error due to: {str(es)}", parent=self.root)
 
+    # this is the function to call registration file
     def signup_function(self):
         self.root.destroy()
         time.sleep(0)
