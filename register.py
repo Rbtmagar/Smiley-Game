@@ -11,10 +11,15 @@ import smtplib
 from emailverifier import Client
 from emailverifier import exceptions
 from validate_email import validate_email
+import time
+import sys
+from cryptography.fernet import Fernet
+import hashlib
+import bcrypt
 import pymysql
 
-# main loop
 
+# main loop
 
 class Registration:
     def __init__(self, root):
@@ -92,9 +97,12 @@ class Registration:
     # functionality
 
     def login(self):
+        time.sleep(0)
         self.root.destroy()
         import login
+    
 
+    # create function to clear all entry fields  
     def clear(self):
         self.username.delete(0, END),
         self.password.delete(0, END),
@@ -153,9 +161,12 @@ class Registration:
                             "Error", "Eamil already in use, Please try with another Email", parent=self.root)
 
                     else:
+                        # hash password
+                        passwd = hashlib.sha1(bytes(self.password.get(), encoding='utf-8'))
+                        password = passwd.hexdigest()
                         cur.execute("insert into player (username,password,email) values(%s,%s,%s)",
                                     (self.username.get(),
-                                     self.password.get(),
+                                     password,
                                      self.email.get()
                                      ))
                         con.commit()
@@ -163,8 +174,9 @@ class Registration:
                         messagebox.showinfo(
                             "Success", f"Congratulaion : {self.username.get()}\nRegisteration is successful", parent=self.root)
                         self.clear()
+                        time.sleep(0)
                         self.root.destroy()
-                        import login
+                        call(["python", "login.py"])
 
                 except Exception as es:
                     messagebox.showerror(

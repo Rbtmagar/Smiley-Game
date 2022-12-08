@@ -4,10 +4,18 @@ from tkinter import ttk
 from PIL import ImageTk
 from tkinter import messagebox
 from subprocess import call
+import subprocess
+import time
+# import sys
+import hashlib
+# import os
+# import re
+from cryptography.fernet import Fernet
 import pymysql
 
-# main loop 
-class Login:
+# main loop
+
+class Login():
     def __init__(self, root):
         self.root = root
         self.root.title("login")
@@ -29,7 +37,7 @@ class Login:
         title.place(x=150, y=20)
 
         title = Label(Frame_login, text="Log in to play Smiley Game",
-                      font=("Goudy old style", 14, "bold"), fg="#d25d17", bg="white")
+                      font=("Goudy old style", 12, "bold"), fg="#d25d17", bg="white")
         title.place(x=150, y=80)
 
         title = Label(Frame_login, text="Username:",
@@ -38,6 +46,7 @@ class Login:
         self.username = Entry(Frame_login, font=(
             "times new Roman", 15), bg="lightgray")
         self.username.place(x=80, y=180, width=350, height=35)
+        
 
         title = Label(Frame_login, text="Password:",
                       font=("Goudy old Style", 14,))
@@ -47,8 +56,9 @@ class Login:
         self.password.place(x=80, y=280, width=350, height=35)
 
         # button
+        self.show_pass= IntVar()
         check = Checkbutton(
-            Frame_login, text="Remember password", bg="white", fg="black", cursor="hand2", bd=0, font=("times new Roman", 10))
+            Frame_login, text="Show password",variable=self.show_pass, command=self.toggle, bg="white", fg="black", cursor="hand2", bd=0, font=("times new Roman", 10))
         check.place(x=80, y=320)
 
         forget = Button(Frame_login, command=self.forget_password, text="Forget Passoword?", bg="white",
@@ -62,12 +72,21 @@ class Login:
         signup = Button(Frame_login, command=self.signup_function, text="Create New Account", cursor="hand2", bg="green",
                         fg="white", font=("times new Roman", 14))
         signup.place(x=225, y=375, width=200)
+    
+       
 
     # functionality
-    
+    def toggle(self):
+        if self.show_pass.get() == 1:
+            self.password.config(show= '')
+        else:
+            self.password.config(show= '*')
+
     def forget_password(self):
         self.root.destroy()
-        call(["python", "forgetpassword.py"])    
+        call(["python", "forgetpassword.py"])
+        
+
 
     def login_function(self):
         if self.username.get() == "" or self.password.get() == "":
@@ -78,17 +97,20 @@ class Login:
                 con = pymysql.connect(
                     host="localhost", user="root", password="", database="player")
                 cur = con.cursor()
-                cur.execute("select * from player where username =%s and password =%s",
-                            (self.username.get(), self.password.get()))
-                row = cur.fetchone()
-                print(row)
-                if row == None:
+                
+                passwd = hashlib.sha1(bytes(self.password.get(), encoding='utf-8'))
+                password = passwd.hexdigest()
+                cur.execute("select password from player where username =%s",
+                            (self.username.get(),))
+
+                row=cur.fetchone()
+                if row[0] != password:
                     messagebox.showerror(
                         "Error", "Invalid username or password", parent=self.root)
-
                 else:
+                    username=self.username.get()
                     self.root.destroy()
-                    call(["python", "game.py"])
+                    call(["python", "game.py",f"{username}"])
 
                 con.close()
 
@@ -98,11 +120,13 @@ class Login:
 
     def signup_function(self):
         self.root.destroy()
+        time.sleep(0)
         call(["python", "register.py"])
+        
 
-
-root = Tk()
-img = PhotoImage(file="Image\icon.png")
-root.iconphoto(False, img)
-obj = Login(root)
-root.mainloop()
+if  __name__ == '__main__':
+    root=Tk()
+    img=PhotoImage(file="Image\icon.png")
+    root.iconphoto(False, img)
+    obj=Login(root)
+    root.mainloop()

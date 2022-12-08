@@ -10,6 +10,9 @@ from emailverifier import Client
 from emailverifier import exceptions
 from validate_email import validate_email
 import pymysql
+import time
+import hashlib
+import sys
 import pickle
 
 
@@ -171,18 +174,22 @@ class Forget_Password:
                 "Error", "Please enter valid otp", parent=self.root)
             self.otp.delete(0, END)
         else:
+            passwd = hashlib.sha1(bytes(self.new_password.get(), encoding='utf-8'))
+            password = passwd.hexdigest()
             con = pymysql.connect(
                 host="localhost", user="root", password="", database="player")
             cur = con.cursor()
             query = "update player set password=%s where email=%s"
-            cur.execute(query, (self.new_password.get(), self.email.get()))
+            cur.execute(query, (password, self.email.get()))
             con.commit()
             con.close()
             messagebox.showinfo(
                 "Success", "Your password is reset.\nPlease, Login with new Password.", parent=self.root)
             print(self.email.get())
+            time.sleep(0)
             self.root.destroy()
-            import login
+            call(["python", "login.py"])
+           
 
 
 root = Tk()
