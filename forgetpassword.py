@@ -1,18 +1,25 @@
+# The class Forget_Password is a class that creates a GUI window with a frame that contains a label,
+# two entry widgets, and two buttons.
+#
+# The first button is a button that when clicked, destroys the current window and opens a new window.
+#
+# The second button is a button that when clicked, checks if the two entry widgets are empty, if they
+# are not empty, checks if the two entry widgets contain the same text, if they do, checks if the text
+# in the entry widgets is less than 6 characters, if it is not, checks if the text in the entry
+# widgets is equal to the text in the entry widgets, if it is, checks if the text in the entry widgets
+# is equal to the text in the entry widgets, if it is, checks if the text in the entry widgets is
+# equal to the text in the entry widgets, if it is, checks if the text in the entry widgets is equal
+# to the text in the entry widgets
 # Import the required libraries
 from tkinter import *
-from tkinter import ttk
 from tkinter import messagebox
 from subprocess import call
 from PIL import ImageTk
 import random
 import smtplib
-from emailverifier import Client
-from emailverifier import exceptions
-from validate_email import validate_email
 import pymysql
 import time
 import hashlib
-import sys
 import pickle
 
 
@@ -23,7 +30,6 @@ class Forget_Password:
         self.root.title("forget_password")
         self.root.geometry("1265x720+0+0")
         self.root.resizable(False, False)
-        
 
         # background image
         self.bg = ImageTk.PhotoImage(file="Image/R.jpg")
@@ -34,6 +40,7 @@ class Forget_Password:
         Frame_forget = Frame(self.root, bg="white")
         Frame_forget.place(x=400, y=80, height=550, width=500)
 
+        # login button
         login = Button(root, text="Log In", command=self.login_function, cursor="hand2", font=(
             "Helvetica 15 underline"), bg="#d77337", fg="white", activebackground="white", bd=0)
         login.place(x=1120, y=20, width=120)
@@ -71,8 +78,9 @@ class Forget_Password:
 
     def login_function(self):
         self.root.destroy()
-        import login
+        call(["python", "login.py"])
 
+    # function to pass otp and reset password
     def otp_pass(self):
         if self.email.get() == "" or self.new_password.get() == "" or self.confirm_password.get() == "":
             messagebox.showerror(
@@ -91,14 +99,13 @@ class Forget_Password:
             query = "select * from player where email=%s"
             cur.execute(query, (self.email.get()))
             row = cur.fetchone()
-            print(row)
             if row == None:
                 messagebox.showerror(
                     "Error", "Incorrect Email!", parent=self.root)
             else:
                 con.commit()
                 con.close()
-                
+
                 # connect to gmail server
                 server = smtplib.SMTP('smtp.gmail.com', 587)  # 587: gmail port
                 # transfer layer security
@@ -107,7 +114,7 @@ class Forget_Password:
                              password='ltjipuebyxvjzcxs')
                 # generate 4 digit otp code
                 self. otp = ''.join([str(random.randint(0, 9))
-                               for i in range(4)])
+                                     for i in range(4)])
                 # If you don't save self.otp in variable you cannot compare to the send otp code in gmail
                 data = self.otp
                 serialized = pickle.dumps(data)
@@ -126,20 +133,24 @@ class Forget_Password:
                 title = Label(Frame_otp, text="Enter the code sent to your email:",
                               font=("times new Roman", 12), fg="black")
                 title.place(x=100, y=40)
-                
-                num=IntVar()
+
+                num = IntVar()
+                num = None
                 self.otp = Entry(Frame_otp, textvariable=num, font=(
                     "times new Roman", 14), bg="lightgray")
                 self.otp.place(x=100, y=80, width=180, height=30)
 
+                # resend button
                 resend = Button(Frame_otp, text="Resend", cursor="hand2", command=self.resend,
                                 font=("Helvetica 14 underline"), fg="black", activebackground="white", bd=0)
                 resend.place(x=300, y=80, width=100)
 
+                # confirm button
                 confirm = Button(Frame_otp, text="Confirm", cursor="hand2", command=self.reset_password,
                                  font=("times new Roman", 14), bg="green", fg="white")
                 confirm.place(x=180, y=140, width=120)
 
+    # function to resend otp
     def resend(self):
         # connect to gmail server
         server = smtplib.SMTP('smtp.gmail.com', 587)  # 587: gmail port
@@ -174,22 +185,26 @@ class Forget_Password:
                 "Error", "Please enter valid otp", parent=self.root)
             self.otp.delete(0, END)
         else:
-            passwd = hashlib.sha1(bytes(self.new_password.get(), encoding='utf-8'))
+            # hashing password with algorithm sha1
+            passwd = hashlib.sha1(
+                bytes(self.new_password.get(), encoding='utf-8'))
             password = passwd.hexdigest()
             con = pymysql.connect(
                 host="localhost", user="root", password="", database="player")
             cur = con.cursor()
             query = "update player set password=%s where email=%s"
             cur.execute(query, (password, self.email.get()))
+            cur.execute(
+                "select username from player where email = %s", (self.email.get()))
+            row = cur.fetchone()
             con.commit()
             con.close()
+            user = row[0]
             messagebox.showinfo(
-                "Success", "Your password is reset.\nPlease, Login with new Password.", parent=self.root)
-            print(self.email.get())
+                "Success", f"{user}, Your password is reset.\nPlease, Login with new Password.", parent=self.root)
             time.sleep(0)
             self.root.destroy()
             call(["python", "login.py"])
-           
 
 
 root = Tk()

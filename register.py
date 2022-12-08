@@ -1,26 +1,16 @@
+# It's a class that creates a GUI window with a registration form
 # Import the required libraries
 from tkinter import *
-from tkinter import ttk
 from tkinter import messagebox
 from subprocess import call
 from PIL import ImageTk
 import re
-import requests
-import random
-import smtplib
-from emailverifier import Client
-from emailverifier import exceptions
-from validate_email import validate_email
 import time
-import sys
-from cryptography.fernet import Fernet
 import hashlib
-import bcrypt
 import pymysql
 
 
 # main loop
-
 class Registration:
     def __init__(self, root):
         self.root = root
@@ -77,7 +67,7 @@ class Registration:
             "times new Roman", 14), bg="lightgray")
         self.email.place(x=180, y=270, width=300, height=30)
 
-        # button
+        # check button
         check = Checkbutton(Frame_register, text="I Agree To The Terms & Conditions", cursor="hand2", variable=self.agree_var, onvalue=1, offvalue=0,
                             bg="white", fg="black", bd=0, font=("times new Roman", 12))
         check.place(x=30, y=320)
@@ -95,11 +85,11 @@ class Registration:
         login.place(x=250, y=440, width=60)
 
     # functionality
-
+    # this function is to call login page
     def login(self):
         time.sleep(0)
         self.root.destroy()
-        import login
+        call(["python", "login.py"])
     
 
     # create function to clear all entry fields  
@@ -121,7 +111,8 @@ class Registration:
         else:
             messagebox.showerror(
                 "Invalid", "Enter valid email (example:xyz@gmail.com)")
-
+            
+    # this function is to register user's details
     def register_data(self):
         if self.username.get() == "" or self.password.get() == "" or self.confirm_password.get() == "" or self.email.get() == "":
             messagebox.showerror(
@@ -147,7 +138,6 @@ class Registration:
                     cur.execute("select * from player where username =%s",
                                 self.username.get())
                     row = cur.fetchone()
-                    print(row)
                     if row != None:
                         messagebox.showerror(
                             "Error", "User already exist, Please try with another Username", parent=self.root)
@@ -155,13 +145,12 @@ class Registration:
                     cur.execute("select * from player where email =%s",
                                 self.email.get())
                     row = cur.fetchone()
-                    print(row)
                     if row != None:
                         messagebox.showerror(
                             "Error", "Eamil already in use, Please try with another Email", parent=self.root)
 
                     else:
-                        # hash password
+                        # hashing password with algorithm sha1
                         passwd = hashlib.sha1(bytes(self.password.get(), encoding='utf-8'))
                         password = passwd.hexdigest()
                         cur.execute("insert into player (username,password,email) values(%s,%s,%s)",

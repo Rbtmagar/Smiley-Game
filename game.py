@@ -1,25 +1,24 @@
+# It creates a GUI that displays a smiley face and asks the user to guess the emotion. 
+# The user has 20 seconds to answer. 
+# If the user answers correctly, the score increases by 1. 
+# If the user answers incorrectly, the score remains the same. 
+# The user can log out at any time. 
+# The user's score is displayed at the bottom of the GUI.
 # Import the required libraries
 from tkinter import *
 import tkinter as tk
-from tkinter import ttk
 from tkinter import messagebox
 from subprocess import call
-import subprocess
 from PIL import Image, ImageTk
 from urllib.request import urlopen
-from requests import Session
 import json
 from tkinter import END, Image
-import pymysql
-import requests
 import urllib.request
-import bs4
 import base64
 import io
 from PIL import ImageTk, Image
 import time
 import sys
-from login import Login
 
 root = tk.Tk()
 root.title("smiley_game")
@@ -45,11 +44,11 @@ class Smiley_Game:
         # label
         title = Label(root, text=f"Welcome {self.username}",
                       font=("Impact", 36, "bold"), fg="#d77337")
-        title.place(x=400, y=10)
+        title.place(x=420, y=10)
         
         title = Label(root, text="You got 20 seconds to answer:",
                       font=("Impact", 16, "bold"), fg="#d77337")
-        title.place(x=350, y=80)
+        title.place(x=420, y=80)
 
         # Entry Input
         self.answer = Entry(root,  font=(
@@ -77,7 +76,8 @@ class Smiley_Game:
         self.image = ImageTk.PhotoImage(image)
         self.imagelab.config(image=self.image)
         root.after(1000*10, self.show_image)
-
+ 
+    #b this function is to logout and move to login page
     def logout_function(self):
         time.sleep(0)
         root.destroy()
@@ -92,7 +92,7 @@ class Smiley_Game:
         solution = smileJson['solution']
         return question, solution
 
-
+    # this is result function for user gameplay
     def result_function(self):
         if self.answer.get() == "":
             messagebox.showerror(
